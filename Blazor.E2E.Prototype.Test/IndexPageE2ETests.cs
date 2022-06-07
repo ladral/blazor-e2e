@@ -7,35 +7,38 @@ namespace Blazor.E2E.Prototype.Test
 {
     public class IndexPageE2ETests : IDisposable
     {
-        private readonly IWebDriver driver;
-        private readonly string appURL;
+        private readonly IWebDriver _driver;
+        private readonly string? _appUrl;
 
         public IndexPageE2ETests()
         {
             var options = new ChromeOptions();
             //options.AddArgument("--headless");
-            driver = new ChromeDriver(options);
-            appURL = Environment.GetEnvironmentVariable("TestUrl");
-            if (string.IsNullOrEmpty(appURL)) appURL = "https://localhost:7241";
-            Console.WriteLine($"appURL is: {appURL}");
+            _driver = new ChromeDriver(options);
+            _appUrl = Environment.GetEnvironmentVariable("TestUrl");
+            if (string.IsNullOrEmpty(_appUrl)) _appUrl = "https://localhost:7241";
+            Console.WriteLine($"appURL is: {_appUrl}");
         }
 
         [Fact]
         public void ShouldDisplayHelloWorld()
         {
+            // arrange
+            const string expectedTitle = "Hello, world!";
+            
             // act
-            driver.Navigate().GoToUrl(appURL + "/");
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            _driver.Navigate().GoToUrl(_appUrl + "/");
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             wait.Until(ExpectedConditions.ElementExists(By.CssSelector("h1")));
 
             //assert
-            Assert.Equal("Hello, world!", driver.FindElements(By.CssSelector("h1"))[0].Text);
-            driver.Quit();
+            Assert.Equal(expectedTitle, _driver.FindElements(By.CssSelector("h1"))[0].Text);
+            _driver.Quit();
         }
 
         public void Dispose()
         {
-            driver.Dispose();
+            _driver.Dispose();
         }
     }
 }

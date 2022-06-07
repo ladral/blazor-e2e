@@ -7,41 +7,41 @@ namespace Blazor.E2E.Prototype.Test
 {
     public class FetchDataPageE2ETests : IDisposable
     {
-        private readonly IWebDriver driver;
-        private readonly string appURL;
+        private readonly IWebDriver _driver;
+        private readonly string? _appUrl;
 
         public FetchDataPageE2ETests()
         {
             var options = new ChromeOptions();
-            driver = new ChromeDriver(options);
-            appURL = Environment.GetEnvironmentVariable("TestUrl");
-            if (string.IsNullOrEmpty(appURL)) appURL = "https://localhost:7241";
-            Console.WriteLine($"appURL is: {appURL}");
+            _driver = new ChromeDriver(options);
+            _appUrl = Environment.GetEnvironmentVariable("TestUrl");
+            if (string.IsNullOrEmpty(_appUrl)) _appUrl = "https://localhost:7241";
+            Console.WriteLine($"appURL is: {_appUrl}");
         }
 
         [Fact]
         public void WeatherForecast_ShouldHaveExpectedColumnCount()
         {
             // arrange
-            const int expectedColumnCount = 4;
             const string columnSelector = ".table th";
+            const int expectedColumnCount = 4;
 
             // act
-            driver.Navigate().GoToUrl(appURL + "/fetchdata");
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            _driver.Navigate().GoToUrl(_appUrl + "/fetchdata");
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".table")));
 
-            var columnCount = driver.FindElements(By.CssSelector(columnSelector)).Count;
+            var columnCount = _driver.FindElements(By.CssSelector(columnSelector)).Count;
 
             // assert
             Assert.Equal(expectedColumnCount, columnCount);
 
-            driver.Quit();
+            _driver.Quit();
         }
 
         public void Dispose()
         {
-            driver.Dispose();
+            _driver.Dispose();
         }
     }
 }

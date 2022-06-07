@@ -7,34 +7,43 @@ namespace Blazor.E2E.Prototype.Test
 {
     public class CounterPageE2ETests : IDisposable
     {
-        private readonly IWebDriver driver;
-        private readonly string appURL;
+        private readonly IWebDriver _driver;
+        private readonly string? _appUrl;
 
         public CounterPageE2ETests()
         {
             var options = new ChromeOptions();
             //options.AddArgument("--headless");
-            driver = new ChromeDriver(options);
-            appURL = Environment.GetEnvironmentVariable("TestUrl");
-            if (string.IsNullOrEmpty(appURL)) appURL = "https://localhost:7241";
-            Console.WriteLine($"appURL is: {appURL}");
+            _driver = new ChromeDriver(options);
+            _appUrl = Environment.GetEnvironmentVariable("TestUrl");
+            if (string.IsNullOrEmpty(_appUrl)) _appUrl = "https://localhost:7241";
+            Console.WriteLine($"appURL is: {_appUrl}");
         }
 
         [Fact]
         public void ShouldIncrementCount()
         {
-            driver.Navigate().GoToUrl(appURL + "/counter");
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            // arrange
+            const int initialCount = 0;
+            const int expectedCount = 1;
+            
+            _driver.Navigate().GoToUrl(_appUrl + "/counter");
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".btn")));
-            Assert.Equal("Current count: 0", driver.FindElements(By.CssSelector("p"))[0].Text);
-            driver.FindElement(By.CssSelector(".btn")).Click();
-            Assert.Equal("Current count: 1", driver.FindElements(By.CssSelector("p"))[0].Text);
-            driver.Quit();
+            
+            // act
+            Assert.Equal($"Current count: {initialCount}", _driver.FindElements(By.CssSelector("p"))[0].Text);
+            _driver.FindElement(By.CssSelector(".btn")).Click();
+            
+            // assert
+            Assert.Equal($"Current count: {expectedCount}", _driver.FindElements(By.CssSelector("p"))[0].Text);
+            
+            _driver.Quit();
         }
 
         public void Dispose()
         {
-            driver.Dispose();
+            _driver.Dispose();
         }
     }
 }

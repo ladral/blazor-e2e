@@ -29,7 +29,7 @@ namespace Blazor.E2E.Prototype.Test
             // act
             _driver.Navigate().GoToUrl(_appUrl + "/fetchdata");
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            wait.Until(ExpectedConditions.ElementExists(By.CssSelector(".table")));
+            wait.Until(ExpectedConditions.ElementExists(By.CssSelector(columnSelector)));
 
             var columnCount = _driver.FindElements(By.CssSelector(columnSelector)).Count;
 

@@ -3,7 +3,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 
-namespace Blazor.E2E.Prototype.Test
+namespace Blazor.E2E.Prototype.Test.Index
 {
     public class IndexPageE2ETests : IDisposable
     {

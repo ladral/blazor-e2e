@@ -8,17 +8,17 @@ namespace Blazor.E2E.Prototype.Test.Index
     public class IndexPageE2ETests : IDisposable
     {
         private readonly IWebDriver _driver;
-        private readonly string? _baseUri;
         private readonly IndexPage _page;
+        private readonly WebDriverWait _wait;
 
         public IndexPageE2ETests()
         {
-            _baseUri = Environment.GetEnvironmentVariable("TestUrl");
+            var baseUri = Environment.GetEnvironmentVariable("TEST_URL");
             var options = new ChromeOptions();
             
-            if (string.IsNullOrEmpty(_baseUri))
+            if (string.IsNullOrEmpty(baseUri))
             {
-                _baseUri = "https://localhost:7241";
+                baseUri = "https://localhost:7241";
             }
             else
             {
@@ -26,27 +26,27 @@ namespace Blazor.E2E.Prototype.Test.Index
             }
             
             _driver = new ChromeDriver(options);
-            _page = new IndexPage(_driver, _baseUri);
-            _page.Navigate();
+            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            _page = new IndexPage(_driver, baseUri);
         }
 
         [Fact]
-        public void ShouldDisplayHelloWorld()
+        public void NavigateToIndexPage_ShouldDisplayExpectedHeading()
         {
             // arrange
-            const string expectedTitle = "Hello, world!";
+            const string expectedHeading = "Hello, world!";
             
             // act
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            wait.Until(ExpectedConditions.ElementExists(By.CssSelector("h1")));
+            _page.Navigate();
+            _wait.Until(ExpectedConditions.ElementExists(IndexPage.HeadingSelector));
 
             //assert
-            Assert.Equal(expectedTitle, _driver.FindElements(By.CssSelector("h1"))[0].Text);
-            _driver.Quit();
+            Assert.Equal(expectedHeading, _page.Heading);
         }
 
         public void Dispose()
         {
+            _driver.Quit();
             _driver.Dispose();
         }
     }

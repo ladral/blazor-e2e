@@ -8,16 +8,26 @@ namespace Blazor.E2E.Prototype.Test.Index
     public class IndexPageE2ETests : IDisposable
     {
         private readonly IWebDriver _driver;
-        private readonly string? _appUrl;
+        private readonly string? _baseUri;
+        private readonly IndexPage _page;
 
         public IndexPageE2ETests()
         {
+            _baseUri = Environment.GetEnvironmentVariable("TestUrl");
             var options = new ChromeOptions();
-            //options.AddArgument("--headless");
+            
+            if (string.IsNullOrEmpty(_baseUri))
+            {
+                _baseUri = "https://localhost:7241";
+            }
+            else
+            {
+                options.AddArgument("--headless");
+            }
+            
             _driver = new ChromeDriver(options);
-            _appUrl = Environment.GetEnvironmentVariable("TestUrl");
-            if (string.IsNullOrEmpty(_appUrl)) _appUrl = "https://localhost:7241";
-            Console.WriteLine($"appURL is: {_appUrl}");
+            _page = new IndexPage(_driver, _baseUri);
+            _page.Navigate();
         }
 
         [Fact]
@@ -27,7 +37,6 @@ namespace Blazor.E2E.Prototype.Test.Index
             const string expectedTitle = "Hello, world!";
             
             // act
-            _driver.Navigate().GoToUrl(_appUrl + "/");
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             wait.Until(ExpectedConditions.ElementExists(By.CssSelector("h1")));
 
